@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" >
+
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <application
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:enableOnBackInvokedCallback="true"
+        android:fullBackupContent="@xml/backup_rules"
+        android:hardwareAccelerated="true"
+        android:icon="@drawable/bitcoin"
+        android:label="@string/app_name"
+        android:roundIcon="@drawable/bitcoin"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.Crypto"
+        tools:targetApi="tiramisu" >
+        <activity
+            android:name=".payments.PaymentRazorpay"
+            android:exported="false"
+            android:theme="@style/Theme.AppCompat.Light"/>
+
+        <meta-data
+            android:name="com.razorpay.API_KEY"
+            android:value="rzp_test_AIHnL4LWr9Dokc" />
+
+        <activity
+            android:name="com.razorpay.CheckoutActivity"
+            android:exported="true" />
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.Crypto" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>
