@@ -51,30 +51,24 @@ android {
 
 dependencies {
 
-    //implementation ("androidx.navigation:navigation-compose:2.8.5")
     implementation ("com.squareup.retrofit2:retrofit:2.9.0")
     implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation ("androidx.compose.runtime:runtime-livedata:1.4.3")
-    //implementation( "com.google.code.gson:gson:2.10.1")
-    //implementation(" 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3'")
+
     implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
     implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+
     implementation ("androidx.navigation:navigation-compose:2.7.3")
     implementation ("androidx.compose.material:material:1.5.1")
-    implementation ("io.coil-kt:coil-compose:2.4.0")
+
+    implementation ("io.coil-kt:coil-compose:2.4.0")// image loading
 
     implementation ("androidx.paging:paging-runtime:3.2.0") // For Paging
     implementation ("androidx.paging:paging-compose:1.0.0-alpha19") // Paging for Compose
 
-    implementation ("com.razorpay:checkout:1.6.33")
+    implementation ("com.razorpay:checkout:1.6.33")// razorpay checkout
 
-//    implementation("io.github.bytebeats:compose-charts:0.2.1")
-//
-//    implementation("com.squareup.moshi:moshi:1.15.0")
-//    implementation("com.squareup.moshi:moshi-kotlin:1.15.0")
-//    implementation ("com.squareup.retrofit2:converter-moshi:2.9.0")
-
-    //kapt("com.squareup.moshi:moshi-kotlin-codegen:1.15.0")
+    implementation("org.java-websocket:Java-WebSocket:1.5.2") // WebSocket for live updates
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -84,7 +78,6 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
-//    implementation(libs.androidx.security.crypto.ktx)
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.constraintlayout.compose.android)
     implementation(libs.androidx.appcompat)

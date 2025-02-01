@@ -14,8 +14,15 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.IconButton
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -23,11 +30,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.app.kaushalprajapati.myapplication.R
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PortfolioScreen() {
+fun PortfolioScreen(navController: NavController) {
     val portfolioValue = "$25,000"
     val changePercentage = "+5.23%"
     val holdings = listOf(
@@ -40,44 +50,54 @@ fun PortfolioScreen() {
         modifier = Modifier
             .fillMaxSize()
             .background(color = Color.Black) // Dark background
-            .padding(16.dp)
+            .fillMaxSize()
     ) {
+        TopAppBar(
+            title = { Text("Your Portfolio", color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.Bold) },
+            colors = TopAppBarDefaults.topAppBarColors(containerColor = Color(0xFF1E1E1E)),
+            navigationIcon = {
+                IconButton(onClick = { navController.popBackStack() }) {
+                    Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "back", tint = Color.White)
+                }
+            }
+        )
+
         // Portfolio Value Section
         PortfolioHeader(portfolioValue = portfolioValue, changePercentage = changePercentage)
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(5.dp))
 
         // Holdings Section
         Text(
             text = "Your Holdings",
             style = MaterialTheme.typography.headlineMedium,
             color = Color.White,
-            modifier = Modifier.padding(bottom = 8.dp)
+            modifier = Modifier.padding(10.dp)
         )
 
-        LazyColumn {
+        LazyColumn(modifier = Modifier.padding(10.dp)) {
             items(holdings) { holding ->
                 CryptoHoldingCard(holding)
             }
         }
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(5.dp))
 
         // Recent Transactions
         Text(
             text = "Recent Transactions",
             style = MaterialTheme.typography.headlineMedium,
             color = Color.White,
-            modifier = Modifier.padding(bottom = 8.dp)
+            modifier = Modifier.padding(10.dp)
         )
 
-        LazyColumn {
+        LazyColumn(modifier = Modifier.padding(10.dp).padding(bottom = 50.dp)) {
             items(3) { index ->
                 TransactionItem(
                     title = "Bought Bitcoin",
                     amount = "-$500",
                     time = "2 hours ago",
-                    iconResId = R.drawable.bitcoin
+                    iconResId = R.drawable.bitcoin,
                 )
             }
         }
@@ -89,7 +109,7 @@ fun PortfolioHeader(portfolioValue: String, changePercentage: String) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp),
+            .padding(top = 10.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(

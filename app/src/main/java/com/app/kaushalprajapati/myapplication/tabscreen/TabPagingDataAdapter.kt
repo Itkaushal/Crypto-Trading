@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -27,6 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -38,6 +40,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavHostController
+import androidx.navigation.navOptions
 import coil.compose.rememberAsyncImagePainter
 import com.app.kaushalprajapati.myapplication.cryptoApi.CryptoCoin
 import com.app.kaushalprajapati.myapplication.cryptoApi.RetrofitInstance
@@ -82,9 +86,13 @@ fun Trending() {
         item {
             Text(
                 text = "Trending 📊",
-                modifier = Modifier.padding(16.dp),
+                modifier =
+                Modifier
+                    .padding(16.dp)
+                    .border(width = 1.dp, color = Color.Yellow, shape = RoundedCornerShape(10.dp))
+                    .padding(10.dp),
                 color = Color.White,
-                style = MaterialTheme.typography.headlineMedium
+                fontSize = 20.sp
             )
         }
 
@@ -104,65 +112,103 @@ fun Trending() {
 
 @Composable
 fun CryptoCoinItemT(coin: CryptoCoin) {
-    Card(
+    Box(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color.Black)
-            .padding(vertical = 8.dp),
-        shape = RoundedCornerShape(10.dp),
-    ) {
-        Row(modifier = Modifier.padding(16.dp)) {
+            .padding(8.dp)
+            .background(color = Color(0xFF1E1E1E), shape = RoundedCornerShape(10)),
+
+        ){
+
+        Row(
+            modifier = Modifier.padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             Image(
                 painter = rememberAsyncImagePainter(coin.image),
-                contentDescription = null,
+                contentDescription ="Image",
                 modifier = Modifier
-                    .size(60.dp)
+                    .size(40.dp)
+                    .background(color = Color.White, shape = CircleShape)
                     .clip(shape = CircleShape)
                     .border(
-                        border = BorderStroke(width = 1.dp, color = Color.Black),
-                        shape = CircleShape
+                        border = BorderStroke(width = 1.dp, color = Color.White),
                     ),
                 alignment = Alignment.Center,
                 contentScale = ContentScale.Crop,
             )
 
-
-            Spacer(modifier = Modifier.width(30.dp))
+            Spacer(modifier = Modifier.width(10.dp))
             Column(
-                modifier = Modifier
-                    .background(color = Color.White, shape = RoundedCornerShape(10.dp))
+                Modifier
+                    .background(color = Color(0xFF1E1E1E), shape = RoundedCornerShape(10.dp))
                     .width(100.dp)
                     .align(alignment = Alignment.CenterVertically),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
-
-                ) {
-
-                //coin name ........................
-                Text(
+            ) {
+                // coin name .............................
+                androidx.compose.material.Text(
                     text = coin.name,
-                    color = Color.Blue,
-                    style = TextStyle(fontSize = 18.sp),
+                    color = Color.White,
                     textAlign = TextAlign.Center,
+                    style = TextStyle(
+                        fontSize = 16.sp,
+                        letterSpacing = 1.sp,
+                        fontWeight = FontWeight.Bold
+                    ),
                     modifier = Modifier
                         .padding(top = 5.dp, end = 5.dp, start = 5.dp)
                 )
 
-                //coin price.................................
-                Spacer(modifier = Modifier.height(5.dp))
-                Text(
-                    text = "${coin.current_price} USD",
-                    color = Color.Red,
-                    style = TextStyle(fontSize = 14.sp),
+                // coin symbol name................................
+                androidx.compose.material.Text(
+                    text = coin.symbol.uppercase(),
+                    color = Color.Gray,
                     textAlign = TextAlign.Center,
+                    style = TextStyle(
+                        fontSize = 16.sp,
+                        letterSpacing = 1.sp,
+                        fontWeight = FontWeight.Bold
+                    ),
                     modifier = Modifier
-                        .padding(bottom = 5.dp, end = 5.dp, start = 5.dp)
+                        .padding(top = 5.dp, bottom = 5.dp, end = 5.dp, start = 5.dp)
                 )
+
+
             }
 
-            //buy button ....................
-            Spacer(modifier = Modifier.width(20.dp))
-            OutlinedButton(onClick = { /*TODO*/ },
+
+            // coin price.................................
+            Spacer(modifier = Modifier.width(10.dp))
+            androidx.compose.material.Text(
+                text = "₹${coin.current_price}",
+                color = Color(0xFFFAFAFA),
+                textAlign = TextAlign.Center,
+                style = TextStyle(fontSize = 16.sp, letterSpacing = 1.sp),
+                modifier = Modifier
+                    .padding(bottom = 5.dp, end = 5.dp, start = 5.dp)
+            )
+
+            // coin 24 h change percentage.................................
+            Spacer(modifier = Modifier.width(10.dp))
+            androidx.compose.material.Text(
+                text = if (coin.price_change_percentage_24h > 0) "+${coin.price_change_percentage_24h}%" else "${coin.price_change_percentage_24h}%",
+                color = if (coin.price_change_percentage_24h > 0) Color(0xFF019502) else Color.Red,
+                textAlign = TextAlign.Center,
+                style = TextStyle(
+                    fontSize = 16.sp,
+                    letterSpacing = 1.sp,
+                    fontWeight = FontWeight.Bold
+                ),
+                modifier = Modifier
+                    .padding(bottom = 5.dp, end = 5.dp, start = 5.dp)
+            )
+
+
+            /*//buy button ....................
+            Spacer(modifier = Modifier.width(10.dp))
+            OutlinedButton(onClick = { },
                 modifier = Modifier
                     .width(80.dp)
                     .fillMaxWidth()
@@ -171,37 +217,35 @@ fun CryptoCoinItemT(coin: CryptoCoin) {
                     .align(Alignment.CenterVertically),
                 border = BorderStroke(1.dp, color = Color.Green)
             ) {
-                Text(
-                    text = "Buy",
+                Text(text = "Buy",
                     textAlign = TextAlign.Center,
                     fontWeight = FontWeight.Bold,
                     fontSize = 14.sp,
                     color = Color.Black,
                     style = TextStyle(textMotion = TextMotion.Animated)
                 )
-            }
+            }*/
 
 
-            //sell button ....................
-            Spacer(modifier = Modifier.width(10.dp))
-            OutlinedButton(onClick = { /*TODO*/ },
-                modifier = Modifier
-                    .width(80.dp)
-                    .fillMaxWidth()
-                    .height(50.dp)
-                    .background(color = Color.Red, shape = RoundedCornerShape(10.dp))
-                    .align(Alignment.CenterVertically),
-                border = BorderStroke(1.dp, color = Color.Red)
-            ) {
-                Text(
-                    text = "Sell",
-                    textAlign = TextAlign.Center,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 14.sp,
-                    color = Color.White,
-                    style = TextStyle(textMotion = TextMotion.Animated)
-                )
-            }
+            /* //sell button ....................
+             Spacer(modifier = Modifier.width(10.dp))
+             OutlinedButton(onClick = {},
+                 modifier = Modifier
+                     .width(80.dp)
+                     .fillMaxWidth()
+                     .height(50.dp)
+                     .background(color = Color.Red, shape = RoundedCornerShape(10.dp))
+                     .align(Alignment.CenterVertically),
+                 border = BorderStroke(1.dp, color = Color.Red,)
+             ) {
+                 Text(text = "Sell",
+                     textAlign = TextAlign.Center,
+                     fontWeight = FontWeight.Bold,
+                     fontSize = 14.sp,
+                     color = Color.White,
+                     style = TextStyle(textMotion = TextMotion.Animated)
+                 )
+             }*/
 
         }
     }
@@ -247,9 +291,13 @@ fun Gainers() {
         item {
             Text(
                 text = "Top Gainers 🚀",
-                modifier = Modifier.padding(16.dp),
+                modifier =
+                Modifier
+                    .padding(16.dp)
+                    .border(border = BorderStroke(width = 1.dp, color = Color.Green), shape = RoundedCornerShape(10.dp))
+                    .padding(10.dp),
                 color = Color.White,
-                style = MaterialTheme.typography.headlineMedium
+                fontSize = 20.sp
             )
         }
 
@@ -269,65 +317,103 @@ fun Gainers() {
 
 @Composable
 fun CryptoCoinItemG(coin: CryptoCoin) {
-    Card(
+    Box(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color.Black)
-            .padding(vertical = 8.dp),
-        shape = RoundedCornerShape(10.dp),
-    ) {
-        Row(modifier = Modifier.padding(16.dp)) {
+            .padding(8.dp)
+            .background(color = Color(0xFF1E1E1E), shape = RoundedCornerShape(10)),
+
+        ){
+
+        Row(
+            modifier = Modifier.padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             Image(
                 painter = rememberAsyncImagePainter(coin.image),
-                contentDescription = null,
+                contentDescription ="Image",
                 modifier = Modifier
-                    .size(60.dp)
+                    .size(40.dp)
+                    .background(color = Color.White, shape = CircleShape)
                     .clip(shape = CircleShape)
                     .border(
-                        border = BorderStroke(width = 1.dp, color = Color.Black),
-                        shape = CircleShape
+                        border = BorderStroke(width = 1.dp, color = Color.White),
                     ),
                 alignment = Alignment.Center,
                 contentScale = ContentScale.Crop,
             )
 
-
-            Spacer(modifier = Modifier.width(30.dp))
+            Spacer(modifier = Modifier.width(10.dp))
             Column(
-                modifier = Modifier
-                    .background(color = Color.White, shape = RoundedCornerShape(10.dp))
+                Modifier
+                    .background(color = Color(0xFF1E1E1E), shape = RoundedCornerShape(10.dp))
                     .width(100.dp)
                     .align(alignment = Alignment.CenterVertically),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
-
-                ) {
-
-                //coin name ........................
-                Text(
+            ) {
+                // coin name .............................
+                androidx.compose.material.Text(
                     text = coin.name,
-                    color = Color.Blue,
-                    style = TextStyle(fontSize = 18.sp),
+                    color = Color.White,
                     textAlign = TextAlign.Center,
+                    style = TextStyle(
+                        fontSize = 16.sp,
+                        letterSpacing = 1.sp,
+                        fontWeight = FontWeight.Bold
+                    ),
                     modifier = Modifier
                         .padding(top = 5.dp, end = 5.dp, start = 5.dp)
                 )
 
-                //coin price.................................
-                Spacer(modifier = Modifier.height(5.dp))
-                Text(
-                    text = "${coin.current_price} USD",
-                    color = Color.Red,
-                    style = TextStyle(fontSize = 14.sp),
+                // coin symbol name................................
+                androidx.compose.material.Text(
+                    text = coin.symbol.uppercase(),
+                    color = Color.Gray,
                     textAlign = TextAlign.Center,
+                    style = TextStyle(
+                        fontSize = 16.sp,
+                        letterSpacing = 1.sp,
+                        fontWeight = FontWeight.Bold
+                    ),
                     modifier = Modifier
-                        .padding(bottom = 5.dp, end = 5.dp, start = 5.dp)
+                        .padding(top = 5.dp, bottom = 5.dp, end = 5.dp, start = 5.dp)
                 )
+
+
             }
 
-            //buy button ....................
-            Spacer(modifier = Modifier.width(20.dp))
-            OutlinedButton(onClick = { /*TODO*/ },
+
+            // coin price.................................
+            Spacer(modifier = Modifier.width(10.dp))
+            androidx.compose.material.Text(
+                text = "₹${coin.current_price}",
+                color = Color(0xFFFAFAFA),
+                textAlign = TextAlign.Center,
+                style = TextStyle(fontSize = 16.sp, letterSpacing = 1.sp),
+                modifier = Modifier
+                    .padding(bottom = 5.dp, end = 5.dp, start = 5.dp)
+            )
+
+            // coin 24 h change percentage.................................
+            Spacer(modifier = Modifier.width(10.dp))
+            androidx.compose.material.Text(
+                text = if (coin.price_change_percentage_24h > 0) "+${coin.price_change_percentage_24h}%" else "${coin.price_change_percentage_24h}%",
+                color = if (coin.price_change_percentage_24h > 0) Color(0xFF019502) else Color.Red,
+                textAlign = TextAlign.Center,
+                style = TextStyle(
+                    fontSize = 16.sp,
+                    letterSpacing = 1.sp,
+                    fontWeight = FontWeight.Bold
+                ),
+                modifier = Modifier
+                    .padding(bottom = 5.dp, end = 5.dp, start = 5.dp)
+            )
+
+
+            /*//buy button ....................
+            Spacer(modifier = Modifier.width(10.dp))
+            OutlinedButton(onClick = { },
                 modifier = Modifier
                     .width(80.dp)
                     .fillMaxWidth()
@@ -336,37 +422,35 @@ fun CryptoCoinItemG(coin: CryptoCoin) {
                     .align(Alignment.CenterVertically),
                 border = BorderStroke(1.dp, color = Color.Green)
             ) {
-                Text(
-                    text = "Buy",
+                Text(text = "Buy",
                     textAlign = TextAlign.Center,
                     fontWeight = FontWeight.Bold,
                     fontSize = 14.sp,
                     color = Color.Black,
                     style = TextStyle(textMotion = TextMotion.Animated)
                 )
-            }
+            }*/
 
 
-            //sell button ....................
-            Spacer(modifier = Modifier.width(10.dp))
-            OutlinedButton(onClick = { /*TODO*/ },
-                modifier = Modifier
-                    .width(80.dp)
-                    .fillMaxWidth()
-                    .height(50.dp)
-                    .background(color = Color.Red, shape = RoundedCornerShape(10.dp))
-                    .align(Alignment.CenterVertically),
-                border = BorderStroke(1.dp, color = Color.Red)
-            ) {
-               Text(
-                    text = "Sell",
-                    textAlign = TextAlign.Center,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 14.sp,
-                    color = Color.White,
-                    style = TextStyle(textMotion = TextMotion.Animated)
-                )
-            }
+            /* //sell button ....................
+             Spacer(modifier = Modifier.width(10.dp))
+             OutlinedButton(onClick = {},
+                 modifier = Modifier
+                     .width(80.dp)
+                     .fillMaxWidth()
+                     .height(50.dp)
+                     .background(color = Color.Red, shape = RoundedCornerShape(10.dp))
+                     .align(Alignment.CenterVertically),
+                 border = BorderStroke(1.dp, color = Color.Red,)
+             ) {
+                 Text(text = "Sell",
+                     textAlign = TextAlign.Center,
+                     fontWeight = FontWeight.Bold,
+                     fontSize = 14.sp,
+                     color = Color.White,
+                     style = TextStyle(textMotion = TextMotion.Animated)
+                 )
+             }*/
 
         }
     }
@@ -417,9 +501,13 @@ fun Losers() {
         item {
             Text(
                 text = "Top Losers 📉",
-                modifier = Modifier.padding(16.dp),
+                modifier =
+                Modifier
+                    .padding(16.dp)
+                    .border(border = BorderStroke(width = 1.dp, color = Color.Red), shape = RoundedCornerShape(10.dp))
+                    .padding(10.dp),
                 color = Color.White,
-                style = MaterialTheme.typography.headlineMedium
+                fontSize = 20.sp
             )
         }
 
@@ -439,65 +527,103 @@ fun Losers() {
 
 @Composable
 fun CryptoCoinItemL(coin: CryptoCoin) {
-    Card(
+    Box(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color.Black)
-            .padding(vertical = 8.dp),
-        shape = RoundedCornerShape(10.dp),
-    ) {
-        Row(modifier = Modifier.padding(16.dp)) {
+            .padding(8.dp)
+            .background(color = Color(0xFF1E1E1E), shape = RoundedCornerShape(10)),
+
+        ){
+
+        Row(
+            modifier = Modifier.padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             Image(
                 painter = rememberAsyncImagePainter(coin.image),
-                contentDescription = null,
+                contentDescription ="Image",
                 modifier = Modifier
-                    .size(60.dp)
+                    .size(40.dp)
+                    .background(color = Color.White, shape = CircleShape)
                     .clip(shape = CircleShape)
                     .border(
-                        border = BorderStroke(width = 1.dp, color = Color.Black),
-                        shape = CircleShape
+                        border = BorderStroke(width = 1.dp, color = Color.White),
                     ),
                 alignment = Alignment.Center,
                 contentScale = ContentScale.Crop,
             )
 
-
-            Spacer(modifier = Modifier.width(30.dp))
+            Spacer(modifier = Modifier.width(10.dp))
             Column(
-                modifier = Modifier
-                    .background(color = Color.White, shape = RoundedCornerShape(10.dp))
+                Modifier
+                    .background(color = Color(0xFF1E1E1E), shape = RoundedCornerShape(10.dp))
                     .width(100.dp)
                     .align(alignment = Alignment.CenterVertically),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
-
-                ) {
-
-                //coin name ........................
-                Text(
+            ) {
+                // coin name .............................
+                androidx.compose.material.Text(
                     text = coin.name,
-                    color = Color.Blue,
-                    style = TextStyle(fontSize = 18.sp),
+                    color = Color.White,
                     textAlign = TextAlign.Center,
+                    style = TextStyle(
+                        fontSize = 16.sp,
+                        letterSpacing = 1.sp,
+                        fontWeight = FontWeight.Bold
+                    ),
                     modifier = Modifier
                         .padding(top = 5.dp, end = 5.dp, start = 5.dp)
                 )
 
-                //coin price.................................
-                Spacer(modifier = Modifier.height(5.dp))
-                Text(
-                    text = "${coin.current_price} USD",
-                    color = Color.Red,
-                    style = TextStyle(fontSize = 14.sp),
+                // coin symbol name................................
+                androidx.compose.material.Text(
+                    text = coin.symbol.uppercase(),
+                    color = Color.Gray,
                     textAlign = TextAlign.Center,
+                    style = TextStyle(
+                        fontSize = 16.sp,
+                        letterSpacing = 1.sp,
+                        fontWeight = FontWeight.Bold
+                    ),
                     modifier = Modifier
-                        .padding(bottom = 5.dp, end = 5.dp, start = 5.dp)
+                        .padding(top = 5.dp, bottom = 5.dp, end = 5.dp, start = 5.dp)
                 )
+
+
             }
 
-            //buy button ....................
-            Spacer(modifier = Modifier.width(20.dp))
-            OutlinedButton(onClick = { /*TODO*/ },
+
+            // coin price.................................
+            Spacer(modifier = Modifier.width(10.dp))
+            androidx.compose.material.Text(
+                text = "₹${coin.current_price}",
+                color = Color(0xFFFAFAFA),
+                textAlign = TextAlign.Center,
+                style = TextStyle(fontSize = 16.sp, letterSpacing = 1.sp),
+                modifier = Modifier
+                    .padding(bottom = 5.dp, end = 5.dp, start = 5.dp)
+            )
+
+            // coin 24 h change percentage.................................
+            Spacer(modifier = Modifier.width(10.dp))
+            androidx.compose.material.Text(
+                text = if (coin.price_change_percentage_24h > 0) "+${coin.price_change_percentage_24h}%" else "${coin.price_change_percentage_24h}%",
+                color = if (coin.price_change_percentage_24h > 0) Color(0xFF019502) else Color.Red,
+                textAlign = TextAlign.Center,
+                style = TextStyle(
+                    fontSize = 16.sp,
+                    letterSpacing = 1.sp,
+                    fontWeight = FontWeight.Bold
+                ),
+                modifier = Modifier
+                    .padding(bottom = 5.dp, end = 5.dp, start = 5.dp)
+            )
+
+
+            /*//buy button ....................
+            Spacer(modifier = Modifier.width(10.dp))
+            OutlinedButton(onClick = { },
                 modifier = Modifier
                     .width(80.dp)
                     .fillMaxWidth()
@@ -506,37 +632,35 @@ fun CryptoCoinItemL(coin: CryptoCoin) {
                     .align(Alignment.CenterVertically),
                 border = BorderStroke(1.dp, color = Color.Green)
             ) {
-                Text(
-                    text = "Buy",
+                Text(text = "Buy",
                     textAlign = TextAlign.Center,
                     fontWeight = FontWeight.Bold,
                     fontSize = 14.sp,
                     color = Color.Black,
                     style = TextStyle(textMotion = TextMotion.Animated)
                 )
-            }
+            }*/
 
 
-            //sell button ....................
-            Spacer(modifier = Modifier.width(10.dp))
-            OutlinedButton(onClick = { /*TODO*/ },
-                modifier = Modifier
-                    .width(80.dp)
-                    .fillMaxWidth()
-                    .height(50.dp)
-                    .background(color = Color.Red, shape = RoundedCornerShape(10.dp))
-                    .align(Alignment.CenterVertically),
-                border = BorderStroke(1.dp, color = Color.Red)
-            ) {
-                Text(
-                    text = "Sell",
-                    textAlign = TextAlign.Center,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 14.sp,
-                    color = Color.White,
-                    style = TextStyle(textMotion = TextMotion.Animated)
-                )
-            }
+            /* //sell button ....................
+             Spacer(modifier = Modifier.width(10.dp))
+             OutlinedButton(onClick = {},
+                 modifier = Modifier
+                     .width(80.dp)
+                     .fillMaxWidth()
+                     .height(50.dp)
+                     .background(color = Color.Red, shape = RoundedCornerShape(10.dp))
+                     .align(Alignment.CenterVertically),
+                 border = BorderStroke(1.dp, color = Color.Red,)
+             ) {
+                 Text(text = "Sell",
+                     textAlign = TextAlign.Center,
+                     fontWeight = FontWeight.Bold,
+                     fontSize = 14.sp,
+                     color = Color.White,
+                     style = TextStyle(textMotion = TextMotion.Animated)
+                 )
+             }*/
 
         }
     }

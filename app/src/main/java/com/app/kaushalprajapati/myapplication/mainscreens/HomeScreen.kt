@@ -1,75 +1,39 @@
 package com.app.kaushalprajapati.myapplication.mainscreens
 
 import android.app.Activity
-import android.app.Activity.RESULT_OK
 import android.content.Intent
-import android.widget.Toast
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Notifications
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardColors
-import androidx.compose.material3.CardElevation
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
-
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.app.ActivityCompat.startActivityForResult
-import androidx.core.content.ContextCompat.startActivity
 import androidx.navigation.NavHostController
+import com.app.kaushalprajapati.myapplication.R
 import com.app.kaushalprajapati.myapplication.payments.PaymentRazorpay
 import com.app.kaushalprajapati.myapplication.tabscreen.TabFragmentWithPaging
 
-
 @Composable
 fun HomeScreen(navController: NavHostController) {
-
     val context = LocalContext.current
-    var walletBalance by remember { mutableStateOf(100.0) }
+    var walletBalance by remember { mutableDoubleStateOf(100.0) }
+    var searchText by remember { mutableStateOf("") }
 
     // Launcher for PaymentRazorpay Activity
     val launcher = rememberLauncherForActivityResult(
@@ -81,29 +45,24 @@ fun HomeScreen(navController: NavHostController) {
         }
     }
 
-
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.Black)
+            .background(color = Color.Black),
     ) {
+        // Search Bar
+        Spacer(modifier = Modifier.height(50.dp))
 
-        // Search Bar and more content in to search bar.........
-        Spacer(modifier = Modifier.height(20.dp))
-        Card(
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 20.dp, end = 20.dp, top = 20.dp)
-                .background(color = Color.White)
+                .padding(start = 10.dp, end = 10.dp)
                 .height(60.dp)
-                .background(color = Color.Black),
-            border = BorderStroke(1.dp, color = Color.Blue),
-            shape = RoundedCornerShape(20.dp),
+                .background(color = Color(0xFF1E1E1E), shape = RoundedCornerShape(8.dp))
+                .padding(horizontal = 10.dp)// Proper padding inside box
         ) {
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(10.dp),
+                modifier = Modifier.fillMaxSize(),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
@@ -111,219 +70,177 @@ fun HomeScreen(navController: NavHostController) {
                 Icon(
                     imageVector = Icons.Default.AccountCircle,
                     contentDescription = "Profile Icon",
-                    modifier = Modifier.size(30.dp),
-                    tint = MaterialTheme.colorScheme.primary
+                    modifier = Modifier
+                        .size(30.dp)
+                        .clickable {
+                            navController.navigate("profile_screen")
+                        },
+                    tint = Color.Magenta.copy(alpha = 0.5f)
                 )
 
                 // Search Bar
-                Box(
+                TextField(
+                    value = searchText,
+                    onValueChange = { searchText = it },
                     modifier = Modifier
                         .weight(1f)
-                        .height(40.dp)
-                        .padding(horizontal = 10.dp)
-                        .background(
-                            color = MaterialTheme.colorScheme.surface,
-                            shape = RoundedCornerShape(12.dp)
-                        ),
-                    contentAlignment = Alignment.CenterStart
-                ) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(horizontal = 12.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
+                        .height(48.dp)
+                        .padding(horizontal = 8.dp),
+                    leadingIcon = {
                         Icon(
                             imageVector = Icons.Default.Search,
                             contentDescription = "Search Icon",
-                            tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                            tint = Color.Gray
                         )
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text(
-                            text = "Search",
-                            style = MaterialTheme.typography.displaySmall.copy(
-                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
-                            )
-                        )
-                    }
-                }
+                    },
+                    placeholder = { Text("Search...", color = Color.White) },
+                    colors = TextFieldDefaults.colors(
+                        focusedContainerColor = Color(0xFF2E2E2E),
+                        unfocusedContainerColor = Color(0xFF1E1E1E),
+                        cursorColor = Color.White,
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent
+                    ),
+                    shape = RoundedCornerShape(30.dp),
+                    singleLine = true
+                )
 
                 // Right Notification Icon
                 Icon(
                     imageVector = Icons.Default.Notifications,
                     contentDescription = "Notification Icon",
-                    modifier = Modifier.size(30.dp),
-                    tint = MaterialTheme.colorScheme.primary
+                    modifier = Modifier
+                        .size(30.dp)
+                        .clickable {
+                            navController.navigate("notification_screen")
+                        },
+                    tint = Color.Magenta.copy(alpha = 0.5f)
                 )
             }
         }
 
-
-        // card design for add funds and more...................
-        Card(
+        // Card Section (Features & Wallet)
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(15.dp)
-                .background(color = Color.White)
+                .padding(8.dp)
                 .height(200.dp)
-                .background(color = Color.Black),
-            border = BorderStroke(1.dp, color = Color.Blue),
-            shape = RoundedCornerShape(30.dp),
-
-            ) {
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                // first item............
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.padding(10.dp)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Person,
-                        contentDescription = "Instant Buy",
-                        modifier = Modifier
-                            .size(50.dp)
-                    )
-
-                    Text(
-                        text = "Instant Buy",
-                        style = TextStyle(color = Color.Black, fontSize = 16.sp)
-                    )
-                }
-
-                // second items........
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.padding(10.dp)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Person,
-                        contentDescription = "Instant Buy",
-                        modifier = Modifier
-                            .size(50.dp)
-                    )
-
-                    Text(
-                        text = "Instant Buy",
-                        style = TextStyle(color = Color.Black, fontSize = 16.sp)
-                    )
-                }
-
-                // third items..........
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.padding(10.dp)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Person,
-                        contentDescription = "Instant Buy",
-                        modifier = Modifier
-                            .size(50.dp)
-                    )
-
-                    Text(
-                        text = "Instant Buy",
-                        style = TextStyle(color = Color.Black, fontSize = 16.sp)
-                    )
-                }
-
-                // fourth items...............
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.padding(10.dp)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Person,
-                        contentDescription = "Instant Buy",
-                        modifier = Modifier
-                            .size(50.dp)
-                    )
-
-                    Text(
-                        text = "Instant Buy",
-                        style = TextStyle(color = Color.Black, fontSize = 16.sp)
-                    )
-                }
-            }
+                .background(color = Color(0xFF1E1E1E), shape = RoundedCornerShape(14.dp))
+        ) {
             Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.padding(10.dp)
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(10.dp),
+                verticalArrangement = Arrangement.SpaceBetween
             ) {
-                Row(horizontalArrangement = Arrangement.SpaceEvenly) {
-                    Icon(
-                        imageVector = Icons.Default.Lock,
-                        contentDescription = "Funds Add",
-                        modifier = Modifier
-                            .size(30.dp)
-                            .align(alignment = Alignment.CenterVertically)
-                    )
+                // **Feature Icons Row**
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    FeatureItem(R.drawable.instantbuy, "Instant Buy") { navController.navigate("instant_buy") }
+                    FeatureItem(R.drawable.portfolio, "Earn Extra") { navController.navigate("earn_extra") }
+                    FeatureItem(R.drawable.plant, "Start SIP") { navController.navigate("start_sip") }
+                    FeatureItem(R.drawable.learning, "Learning") { navController.navigate("learning") }
+                }
 
-                    Text(
-                        text = "Funds",
-                        style = TextStyle(
-                            color = Color.Blue,
-                            textAlign = TextAlign.Center,
-                            fontSize = 14.sp
-                        ),
-                        modifier = Modifier
-                            .align(Alignment.CenterVertically)
-                            .padding(10.dp)
-                    )
+                // **Wallet Balance & Add Funds**
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.padding(start = 16.dp)
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.wallet),
+                            contentDescription = "Funds Add",
+                            modifier = Modifier.size(40.dp),
+                            tint = Color.White
+                        )
 
-                    Text(
-                        text = "₹$walletBalance",
-                        style = TextStyle(
-                            color = Color.Black,
-                            textAlign = TextAlign.Center,
-                            fontSize = 16.sp
-                        ),
-                        modifier = Modifier
-                            .align(Alignment.CenterVertically)
-                            .padding(10.dp)
-                    )
+                        Spacer(modifier = Modifier.width(10.dp))
 
+                        Text(
+                            text = "Funds  = ",
+                            style = TextStyle(
+                                color = Color.Gray,
+                                textAlign = TextAlign.Center,
+                                fontSize = 18.sp,
+                                letterSpacing = 1.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                        )
+
+                        Text(
+                            text = "₹$walletBalance",
+                            style = TextStyle(
+                                color = Color.White,
+                                fontWeight = FontWeight.SemiBold,
+                                textAlign = TextAlign.Center,
+                                fontSize = 18.sp
+                            )
+                        )
+                    }
 
                     FloatingActionButton(
                         onClick = {
                             val intent = Intent(context, PaymentRazorpay::class.java)
                             launcher.launch(intent)
                         },
-                        containerColor = Color.Red,
-                        shape = RoundedCornerShape(100.dp),
+                        containerColor = Color.Magenta.copy(alpha = 0.4f),
+                        shape = RoundedCornerShape(50.dp),
                         modifier = Modifier
-                            .align(alignment = Alignment.CenterVertically)
-                            .padding(10.dp)
-                            .size(40.dp)
-                            .offset(x = 100.dp)
+                            .padding(16.dp)
+                            .size(55.dp)
                     ) {
                         Text(
                             text = "+",
                             style = TextStyle(
-                                color = Color.Blue,
+                                color = Color.White,
                                 textAlign = TextAlign.Center,
-                                fontSize = 20.sp
+                                fontSize = 24.sp,
+                                fontWeight = FontWeight.Bold
                             )
                         )
                     }
-
-
                 }
             }
-
         }
 
-        // tab fragment with paging..........
-
+        // Tab Fragment with Paging
         Spacer(modifier = Modifier.height(5.dp))
         Column(
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(color = Color(0xFF1E1E1E))
         ) {
             TabFragmentWithPaging()
         }
     }
-
 }
 
+// **Composable for Feature Icons**
+@Composable
+fun FeatureItem(iconRes: Int, title: String, onClick: () -> Unit) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier
+            .clickable { onClick() }
+            .padding(8.dp)
+    ) {
+        Icon(
+            painter = painterResource(id = iconRes),
+            contentDescription = title,
+            modifier = Modifier.size(40.dp),
+            tint = Color.Gray
+        )
+        Spacer(modifier = Modifier.height(6.dp))
+        Text(
+            text = title,
+            style = TextStyle(color = Color.Gray, fontSize = 14.sp)
+        )
+    }
+}

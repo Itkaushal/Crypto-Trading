@@ -5,6 +5,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -19,6 +20,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardColors
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
@@ -38,13 +41,12 @@ import coil.compose.rememberAsyncImagePainter
 @Composable
 fun CryptoCoinItem(coin: CryptoCoin){
 
-    Card (
+    Box(
       modifier = Modifier
           .fillMaxWidth()
           .padding(8.dp)
-          .background(color = Color.Black),
-        shape = RoundedCornerShape(10),
-        border = BorderStroke(1.dp, Color.Black),
+          .background(color = Color(0xFF1E1E1E), shape = RoundedCornerShape(20)),
+
     ){
 
         Row(
@@ -55,7 +57,7 @@ fun CryptoCoinItem(coin: CryptoCoin){
                 painter = rememberAsyncImagePainter(coin.image),
                 contentDescription ="Image",
                 modifier = Modifier
-                    .size(70.dp)
+                    .size(50.dp)
                     .background(color = Color.White, shape = CircleShape)
                     .clip(shape = CircleShape)
                     .border(
@@ -68,7 +70,7 @@ fun CryptoCoinItem(coin: CryptoCoin){
             Spacer(modifier = Modifier.width(10.dp))
             Column(
                 Modifier
-                    .background(color = Color.White, shape = RoundedCornerShape(10.dp))
+                    .background(color = Color(0xFF1E1E1E), shape = RoundedCornerShape(10.dp))
                     .width(100.dp)
                     .align(alignment = Alignment.CenterVertically),
                 verticalArrangement = Arrangement.Center,
@@ -76,26 +78,46 @@ fun CryptoCoinItem(coin: CryptoCoin){
             ) {
                 // coin name .............................
                 Text(text = coin.name,
-                    color = Color.Blue,
+                    color = Color.White,
                     textAlign = TextAlign.Center,
-                    style = TextStyle(fontSize = 16.sp, letterSpacing = 1.sp),
+                    style = TextStyle(fontSize = 16.sp, letterSpacing = 1.sp, fontWeight = FontWeight.Bold),
                     modifier = Modifier
                         .padding(top = 5.dp, end = 5.dp, start = 5.dp))
-
-                // coin price.................................
-                Spacer(modifier = Modifier.height(10.dp))
-                Text(text = "${coin.current_price} USD",
-                    color = Color.Red,
+                
+                // coin symbol name................................
+                Text(text = coin.symbol.uppercase(),
+                    color = Color.Gray,
                     textAlign = TextAlign.Center,
-                    style = TextStyle(fontSize = 16.sp,letterSpacing = 1.sp),
+                    style = TextStyle(fontSize = 16.sp, letterSpacing = 1.sp, fontWeight = FontWeight.Bold),
                     modifier = Modifier
-                        .padding(bottom = 5.dp, end = 5.dp, start = 5.dp))
+                        .padding(top = 5.dp,bottom = 5.dp, end = 5.dp, start = 5.dp))
+                
 
             }
 
-            //buy button ....................
+
+            // coin price.................................
             Spacer(modifier = Modifier.width(10.dp))
-            OutlinedButton(onClick = { /*TODO*/ },
+            Text(text = "₹${coin.current_price}",
+                color = Color(0xFFFAFAFA),
+                textAlign = TextAlign.Center,
+                style = TextStyle(fontSize = 16.sp,letterSpacing = 1.sp),
+                modifier = Modifier
+                    .padding(bottom = 5.dp, end = 5.dp, start = 5.dp))
+            
+            // coin 24 h change percentage.................................
+            Spacer(modifier = Modifier.width(10.dp))
+            Text(text = if (coin.price_change_percentage_24h>0) "+${coin.price_change_percentage_24h}%" else "${coin.price_change_percentage_24h}%",
+                color = if (coin.price_change_percentage_24h > 0) Color(0xFF019502) else Color.Red,
+                textAlign = TextAlign.Center,
+                style = TextStyle(fontSize = 16.sp,letterSpacing = 1.sp, fontWeight = FontWeight.Bold),
+                modifier = Modifier
+                    .padding(bottom = 5.dp, end = 5.dp, start = 5.dp))
+
+
+            /*//buy button ....................
+            Spacer(modifier = Modifier.width(10.dp))
+            OutlinedButton(onClick = { },
                 modifier = Modifier
                     .width(80.dp)
                     .fillMaxWidth()
@@ -111,12 +133,12 @@ fun CryptoCoinItem(coin: CryptoCoin){
                     color = Color.Black,
                     style = TextStyle(textMotion = TextMotion.Animated)
                 )
-            }
+            }*/
 
 
-            //sell button ....................
+           /* //sell button ....................
             Spacer(modifier = Modifier.width(10.dp))
-            OutlinedButton(onClick = { /*TODO*/ },
+            OutlinedButton(onClick = {},
                 modifier = Modifier
                     .width(80.dp)
                     .fillMaxWidth()
@@ -132,14 +154,12 @@ fun CryptoCoinItem(coin: CryptoCoin){
                     color = Color.White,
                     style = TextStyle(textMotion = TextMotion.Animated)
                 )
-            }
+            }*/
 
         }
     }
 
 }
-
-
 
 
 @Composable

@@ -96,7 +96,7 @@ fun SplashScreen(navController: NavController){
                 popUpTo("splash_screen"){ inclusive = true }
             }
         } else{
-            navController.navigate("sign_in"){
+            navController.navigate("main_screen"){
                 popUpTo("splash_screen"){inclusive = true}
             }
         }

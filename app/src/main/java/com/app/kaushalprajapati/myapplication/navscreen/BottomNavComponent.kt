@@ -35,27 +35,29 @@ fun BottomNavigationBar(navController: NavController) {
     )
 
     BottomNavigation(
-        backgroundColor = Color.White,
+        backgroundColor = Color(0xFF1E1E1E),
         contentColor = Color.White,
         elevation = 50.dp,
         modifier = Modifier.fillMaxWidth()
-            .background(color = Color.Black, shape = RoundedCornerShape(10.dp))
+            .padding(top = 10.dp)
     ) {
         val navBackStackEntry by navController.currentBackStackEntryAsState()
         val currentRoute = navBackStackEntry?.destination?.route
 
         items.forEach { items ->
             BottomNavigationItem(
-                icon = { Icon(items.icon, contentDescription = items.title, tint = Color.DarkGray) },
-                label = { Text(items.title, style = TextStyle(color = Color.Blue, fontWeight = FontWeight.Normal)) },
+                icon = { Icon(items.icon, contentDescription = items.title, tint = Color.Magenta.copy(alpha = 0.4f), modifier = Modifier.padding(top = 10.dp)) },
+                alwaysShowLabel = true,
+                selectedContentColor = Color.White,
+                unselectedContentColor = Color.White,
+                label = {Text(items.title, style = TextStyle(color = Color.White.copy(alpha = 0.8f), fontWeight = FontWeight.Bold), modifier = Modifier.padding(bottom = 10.dp).padding(top = 10.dp))},
                 selected = currentRoute == items.route,
                 onClick = {
                     if (currentRoute != items.route) {
                         navController.navigate(items.route)
                     }
                 },
-                selectedContentColor = Color.Black,
-                unselectedContentColor = Color.White
+
             )
 
         }
