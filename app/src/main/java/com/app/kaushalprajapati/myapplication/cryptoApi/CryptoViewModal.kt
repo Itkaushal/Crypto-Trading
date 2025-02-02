@@ -31,6 +31,8 @@ class CryptoViewModal: ViewModel() {
         }
     }
 
+    // Adding WebSocket support for live crypto price updates
+
     private fun startLiveUpdates() {
         val ws = URI("wss://stream.coingecko.com")
         val client = object : WebSocketClient(ws) {
