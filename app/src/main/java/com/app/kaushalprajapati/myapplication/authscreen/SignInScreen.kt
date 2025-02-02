@@ -13,11 +13,17 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -29,76 +35,108 @@ import androidx.compose.ui.autofill.AutofillType
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SignInScreen(navController : NavController){
     val context = LocalContext.current
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
-
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-            .background(color = Color.White),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Text(text = "Sign In", style = MaterialTheme.typography.headlineMedium)
-
-        Spacer(modifier = Modifier.height(20.dp))
-
-        OutlinedTextField(
-            value = email,
-            onValueChange = { email = it },
-            label = { Text("Email") },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        Spacer(modifier = Modifier.height(10.dp))
-
-        OutlinedTextField(
-            value = password,
-            onValueChange = { password = it },
-            label = { Text("Password") },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        Spacer(modifier = Modifier.height(20.dp))
-
-        Button(
-            onClick = {
-                if (validateUser(context, email, password)) {
-                    setLoggedIn(context,true)
-                    navController.navigate("main_screen"){
-                        popUpTo("sign_in") {inclusive = true}
-                    }
-                } else {
-                    Toast.makeText(context, "invalid email/password?$email\n $password", Toast.LENGTH_SHORT).show()
+    Column(modifier = Modifier.background(color = Color.Black)
+        .fillMaxSize()) {
+        TopAppBar(
+            title = {
+                Text(
+                    "Sign In",
+                    color = Color.White,
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold
+                )
+            },
+            navigationIcon = {
+                androidx.compose.material.IconButton(onClick = { navController.popBackStack() }) {
+                    Icon(
+                        imageVector = Icons.Default.ArrowBack,
+                        contentDescription = "back",
+                        tint = Color.White
+                    )
                 }
             },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text(text = "Sign In")
-        }
+            colors = TopAppBarDefaults.topAppBarColors(containerColor = Color(0xFF1E1E1E))
+        )
 
-        Spacer(modifier = Modifier.height(10.dp))
-
-        OutlinedButton(onClick = {
-            navController.navigate("sign_up")
-            Toast.makeText(context, "Redirecting...sign_up page", Toast.LENGTH_SHORT).show()
-         },
+        Column(
             modifier = Modifier
-                .padding(10.dp)
-                .width(150.dp)
-                .background(color = Color.Blue, shape = RoundedCornerShape(20.dp))
+                .fillMaxSize()
+                .padding(16.dp)
+                .background(color = Color.White),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
-            Text(text = "SignOut")
+            Text(text = "Sign In", style = MaterialTheme.typography.headlineMedium)
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            OutlinedTextField(
+                value = email,
+                onValueChange = { email = it },
+                label = { Text("Email") },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            OutlinedTextField(
+                value = password,
+                onValueChange = { password = it },
+                label = { Text("Password") },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            Button(
+                onClick = {
+                    if (validateUser(context, email, password)) {
+                        setLoggedIn(context, true)
+                        navController.navigate("main_screen") {
+                            popUpTo("sign_in") { inclusive = true }
+                        }
+                    } else {
+                        Toast.makeText(
+                            context,
+                            "invalid email/password?$email\n $password",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(text = "Sign In")
+            }
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            OutlinedButton(
+                onClick = {
+                    navController.navigate("sign_up")
+                    Toast.makeText(context, "Redirecting...sign_up page", Toast.LENGTH_SHORT).show()
+                },
+                modifier = Modifier
+                    .padding(10.dp)
+                    .width(150.dp)
+                    .background(color = Color.Blue, shape = RoundedCornerShape(20.dp))
+            ) {
+                Text(text = "SignOut")
+            }
         }
     }
 }

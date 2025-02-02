@@ -38,6 +38,8 @@ class MainActivity : ComponentActivity() {
                     LaunchedEffect(Unit) {
                         if (!isInternetAvailable(context)) {
                             Toast.makeText(context, "No Internet Connection", Toast.LENGTH_LONG).show()
+                        } else{
+                            Toast.makeText(context, "Welcome", Toast.LENGTH_SHORT).show()
                         }
                     }
 
