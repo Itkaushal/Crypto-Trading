@@ -44,7 +44,7 @@ fun LearningScreen(navController: NavController){
             }
         )
 
-        WebViewScreen(url = "https://coinmarketcap.com/")
+        WebViewScreen(url = "https://landing.coingecko.com/earn/")
     }
 
 }
